@@ -63,6 +63,9 @@ function getCss(theme: string, fontSize: string) {
 
     .logo {
         object-fit: contain;
+        position: absolute;
+        top: 10%;
+        z-index: 0;
     }
 
     .plus {
@@ -122,8 +125,9 @@ export function getHtml(parsedReq: ParsedRequest) {
         <img
         class="background-image"
         alt="Prysm background"
-        src="https://nccmlpufieusnuqflhrr.supabase.co/storage/v1/object/public/squads-og-logos/squad-meta-share-4x.png"
+        src="https://nccmlpufieusnuqflhrr.supabase.co/storage/v1/object/public/squads-og-logos/squad-meta-share-large.png"
         />
+        <img width="400" height="200" class="logo" alt="prysm logo" src="https://nccmlpufieusnuqflhrr.supabase.co/storage/v1/object/public/squads-og-logos/dark-mode.png"/>
         <div class="content">
             <div class="heading">${emojify(
         md ? marked(text) : sanitizeHtml(text)
