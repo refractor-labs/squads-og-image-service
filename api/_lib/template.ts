@@ -7,46 +7,40 @@ const twemoji = require('twemoji');
 const twOptions = { folder: 'svg', ext: '.svg' };
 const emojify = (text: string) => twemoji.parse(text, twOptions);
 
-const rglr = readFileSync(`${__dirname}/../_fonts/Inter-Regular.woff2`).toString('base64');
-const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString('base64');
-const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
+const rglr = readFileSync(`${__dirname}/../_fonts/Favorit-Medium.woff2`).toString('base64');
+const bold = readFileSync(`${__dirname}/../_fonts/Favorit-Bold.woff2`).toString('base64');
+const mono = readFileSync(`${__dirname}/../_fonts/FavoritMono-Medium.woff2`).toString('base64');
 
 function getCss(theme: string, fontSize: string) {
-    let background = 'white';
     let foreground = 'black';
-    let radial = 'lightgray';
 
     if (theme === 'dark') {
-        background = 'black';
         foreground = 'white';
-        radial = 'dimgray';
     }
     return `
     @font-face {
-        font-family: 'Inter';
+        font-family: 'ABC Favorit';
         font-style:  normal;
         font-weight: normal;
         src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
     }
 
     @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: bold;
+        font-family: "ABC Favorit";
+        font-style: "normal";
+        font-display: "swap";
+        font-weight: 700;
         src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
     }
 
     @font-face {
-        font-family: 'Vera';
-        font-style: normal;
-        font-weight: normal;
+        font-family: "ABC Favorit Mono";
+        font-style: "normal";
+        font-display: "swap";
+        font-weight: 400;
         src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
       }
-
     body {
-        background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
-        background-size: 100px 100px;
         height: 100vh;
         display: flex;
         text-align: center;
@@ -93,18 +87,35 @@ function getCss(theme: string, fontSize: string) {
         margin: 0 .05em 0 .1em;
         vertical-align: -0.1em;
     }
+
+    .background-image {
+        position: absolute;
+        inset: 0;
+        object-fit: cover;
+        width: 100%;
+        height: 101%;
+        z-index: 0;
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+    }
     
     .heading {
-        font-family: 'Inter', sans-serif;
+        font-family: "ABC Favorit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
         font-size: ${sanitizeHtml(fontSize)};
         font-style: normal;
         color: ${foreground};
         line-height: 1.8;
     }`;
+
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
+    const { text, theme, md, fontSize } = parsedReq;
     return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
@@ -114,33 +125,19 @@ export function getHtml(parsedReq: ParsedRequest) {
         ${getCss(theme, fontSize)}
     </style>
     <body>
-        <div>
+        <img
+        class="background-image"
+        alt="Prysm background"
+        src="https://nccmlpufieusnuqflhrr.supabase.co/storage/v1/object/public/squads-og-logos/squad-meta-share.png"
+        />
+        <div class="content">
             <div class="spacer">
-            <div class="logo-wrapper">
-                ${images.map((img, i) =>
-                    getPlusSign(i) + getImage(img, widths[i], heights[i])
-                ).join('')}
-            </div>
             <div class="spacer">
             <div class="heading">${emojify(
-                md ? marked(text) : sanitizeHtml(text)
-            )}
+        md ? marked(text) : sanitizeHtml(text)
+    )}
             </div>
         </div>
     </body>
 </html>`;
-}
-
-function getImage(src: string, width ='auto', height = '225') {
-    return `<img
-        class="logo"
-        alt="Generated Image"
-        src="${sanitizeHtml(src)}"
-        width="${sanitizeHtml(width)}"
-        height="${sanitizeHtml(height)}"
-    />`
-}
-
-function getPlusSign(i: number) {
-    return i === 0 ? '' : '<div class="plus">+</div>';
 }
