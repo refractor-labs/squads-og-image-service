@@ -41,6 +41,7 @@ function getCss(theme: string, fontSize: string) {
         src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
       }
     body {
+        background: black;
         height: 100vh;
         display: flex;
         text-align: center;
@@ -89,11 +90,12 @@ function getCss(theme: string, fontSize: string) {
     }
 
     .background-image {
+        top: 5vh;
         position: absolute;
         inset: 0;
         object-fit: cover;
         width: 100%;
-        height: 101%;
+        height: 100%;
         z-index: 0;
     }
 
